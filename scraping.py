@@ -1,36 +1,50 @@
-import requests
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
+import time
+from selenium.common.exceptions import NoSuchElementException
 from pymongo import MongoClient
+import requests
 
-
-
+# 테스트 시에는 팀원분들 주소, 아이디, 패스워드로 써주세요
 client = MongoClient('mongodb+srv://sparta:woowa@cluster0.lqx8f.mongodb.net/?retryWrites=true&w=majority', 27017, username="sparta", password="woowa")
 db = client.dbcooking_recipe
 
-# URL을 읽어서 HTML를 받아오고,
-headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'}
-data = requests.get('https://www.10000recipe.com/recipe/list.html',headers=headers)
+# 구글 드라이브 절대경로입니다 이 부분도 바꿔주세요
+s = Service('/Users/amigo/Downloads/chromedriver')
+driver = webdriver.Chrome(service=s)
 
-# HTML을 BeautifulSoup이라는 라이브러리를 활용해 검색하기 용이한 상태로 만듦
-soup = BeautifulSoup(data.text, 'html.parser')
+url = "https://www.10000recipe.com/recipe/list.html"
 
-# select를 이용해서, tr들을 불러오기
-dishes = soup.select('#contents_area_full > ul > ul >li ')
+driver.get(url)
+time.sleep(5)
 
+#더보기 버튼
+# for i in range(10):
+#     try:
+#         btn_more = driver.find_element_by_css_selector("#foodstar-front-location-curation-more-self > div > button")
+#         btn_more.click()
+#         time.sleep(5)
+#     except NoSuchElementException:
+#         break
 
-for dish in dishes:
-    # dishes 안에 dish 가 있으면,
-    dish_img = dish.select_one('div.common_sp_thumb > a > img')['src']
-    dish_title = dish.select_one('div.common_sp_caption > div.common_sp_caption_tit.line2').text
-    dish_star_tag = dish.select_one('div.common_sp_caption > div.common_sp_caption_rv > span.common_sp_caption_rv_star')
+req = driver.page_source
+driver.quit()
 
-    # print(dish_star) 별점 크롤링 문제
+soup = BeautifulSoup(req, 'html.parser')
+
+places = soup.select("#contents_area_full > ul > ul >li ")
+print(len(places))
+
+for place in places:
+    title = place.select_one('div.common_sp_caption > div.common_sp_caption_tit.line2').text
+    img = place.select_one('div.common_sp_thumb > a > img')['src']
+
+    print(title, img)
     doc = {
-        'dish_img': dish_img,
-        'dish_title': dish_title,
-        # 'dish_star': dish_star
-    }
-    db.dishes.insert_one(doc)
-
-
+        "title": title,
+        "img": img,
+        }
+    db.recipes.insert_one(doc)
 

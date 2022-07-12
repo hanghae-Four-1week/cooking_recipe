@@ -1,134 +1,125 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>스파르타코딩클럽 | 맛집 검색</title>
+    <script type="text/javascript"
+            src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=YOUR_CLIENT_ID&submodules=geocoder"></script>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
             crossorigin="anonymous"></script>
-
-    <title>스파르타 피디아</title>
-
-    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
-
     <style>
-        * {
-            font-family: 'Gowun Dodum', sans-serif;
+        .wrap {
+            width: 90%;
+            max-width: 750px;
+            margin: 0 auto;
         }
 
-        .mytitle {
+        .banner {
             width: 100%;
-            height: 250px;
-
-            background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://movie-phinf.pstatic.net/20210715_95/1626338192428gTnJl_JPEG/movie_image.jpg');
+            height: 20vh;
+            background-image: url("{{ url_for('static', filename='banner.jpg') }}");
             background-position: center;
-            background-size: cover;
+            background-size: contain;
+            background-repeat: repeat;
 
+        }
+
+        h1.title {
             color: white;
-
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            font-size: 3rem;
         }
 
-        .mytitle > button {
-            width: 200px;
-            height: 50px;
-
-            background-color: transparent;
-            color: white;
-
-            border-radius: 50px;
-            border: 1px solid white;
-
-            margin-top: 10px;
+        .recipe-list {
+            /*overflow: scroll;*/
+            width: 100%;
+            height: 100%;
+            position: relative;
         }
 
-        .mytitle > button:hover {
-            border: 2px solid white;
+        .card-title, .card-subtitle {
+            display: inline;
+        }
+        .card-img {
+            width: 300px;
+            height: 300px;
         }
 
-        .mycomment {
-            color: gray;
-        }
-
-        .mycards {
-            margin: 20px auto 0px auto;
-            width: 95%;
-            max-width: 1200px;
-        }
-
-
-        .mybtns > button {
-            margin-right: 10px;
-        }
     </style>
     <script>
-        $(document).ready(function(){
-          listing();
-        });
 
-        function listing() {
+        $(document).ready(function () {
+
+            get_recipes()
+        })
+
+
+        function get_recipes() {
+            $('#recipe-box').empty();
             $.ajax({
-                type: 'GET',
-                url: '/main',
+                type: "GET",
+                url: '/recipes',
                 data: {},
                 success: function (response) {
-                    let rows = response['orders']
-                    for (let i = 0; i < rows.length; i++) {
-                        let name = rows[i]['name']
-                        let address = rows[i]['address']
-                        let size = rows[i]['size']
-
-                        let temp_html = `<tr>
-                                            <td>${name}</td>
-                                            <td>${address}</td>
-                                            <td>${size}</td>
-                                          </tr>`
-                        $('#order-box').append(temp_html)
-            }
+                    let recipes = response["recipes_list"]
+                    for (let i = 0; i < recipes.length; i++) {
+                        let recipe = recipes[i]
+                        console.log(recipe)
+                        make_card(i, recipe)
+                    }
                 }
-            })
+            });
         }
-        // function posting() {
-        //     $.ajax({
-        //         type: 'POST',
-        //         url: '/detail',
-        //         data: {sample_give: '데이터전송'},
-        //         success: function (response) {
-        //             alert(response['msg'])
-        //         }
-        //     });
-        // }
 
+        function make_card(i, recipe) {
+            let html_temp = `<div class="card" id="card-${i}">
+                        <div class="card-body">
+                            <img src="${recipe.img}" alt="..." class="card-img"></img>
+                            <h5 class="card-title"><a href="#" class="matjip-title">${recipe.title}</a></h5>
+                        </div>
+                     </div>`;
+            $('#recipe-box').append(html_temp);
+        }
     </script>
+
 </head>
 
 <body>
+<div class="wrap">
+    <div class="banner">
+        <div class="d-flex flex-column align-items-center"
+             style="background-color: rgba(0,0,0,0.5);width: 100%;height: 100%;">
+            <h1 class="title mt-5 mb-2">스파르타 맛집 지도</h1>
+        </div>
+    </div>
 
-<div class="mycards">
-    <div class="row row-cols-1 row-cols-md-4 g-4" id="cards-box">
-        <div class="col">
-            <div class="card h-100">
-                <img src="https://movie-phinf.pstatic.net/20210728_221/1627440327667GyoYj_JPEG/movie_image.jpg"
-                     class="card-img-top">
-                <div class="card-body">
-                    <h5 class="card-title">{{dish_img}}</h5>
-                    <p class="card-text">여기에 영화에 대한 설명이 들어갑니다.</p>
-                    <p>⭐⭐⭐</p>
-                    <p class="mycomment">나의 한줄 평을 씁니다</p>
 
-                </div>
+    <div class="recipe-list" id="recipe-box">
+        <div class="card" id="card-0">
+            <div class="card-body">
+                <h5 class="card-title"><a href="#" class="matjip-title">혼가츠</a></h5>
+                <h6 class="card-subtitle mb-2 text-muted">일식</h6>
+                <p class="card-text">서울 마포구 와우산로21길 36-6 (서교동)</p>
+                <p class="card-text" style="color:blue;">생방송 투데이</p>
             </div>
         </div>
     </div>
 </div>
+
 </body>
 
 </html>
