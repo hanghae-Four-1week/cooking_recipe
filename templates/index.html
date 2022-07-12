@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+
+    <title>슬기로운 레시피</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            font-family: 'Gowun Dodum', sans-serif;
+        }
+
+        .header {
+            width:100%;
+            height:150px;
+            background-color: rgba(100, 220, 9, 0.628);
+
+            background-image: linear-gradient(0deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0)), url('../static/back_2.png');
+            background-position: center;
+            background-size: cover;
+            opacity:1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .title {
+            color:white;
+            margin:0 auto;
+            width:30%;
+            background-color: black;
+            opacity: 0.8;
+            height:100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+        }
+
+        .title h1 {
+            font-weight: 600;
+            z-index: 5;
+        }
+
+        .user-nick {
+            width:100%;
+            text-align: center;
+            position: absolute;
+            bottom:10px;
+        }
+
+        .user-nick h3 span{
+            color:white;
+            font-weight: 600;
+        }
+        .user-nick h3 {
+            color: white;
+        }
+
+        .mycomment {
+            color: gray;
+        }
+
+        .mycards {
+            margin: 20px auto 0px auto;
+            width: 95%;
+            max-width: 1200px;
+        }
+
+
+        .mybtns > button {
+            margin-right: 10px;
+        }
+    </style>
+    <script>
+        // $(document).ready(function(){
+        //   listing();
+        // });
+        //
+        // function listing() {
+        //     $.ajax({
+        //         type: 'GET',
+        //         url: '/detail',
+        //         data: {},
+        //         success: function (response) {
+        //             alert(response['msg'])
+        //         }
+        //     })
+        // }
+        //
+        // function posting() {
+        //     $.ajax({
+        //         type: 'POST',
+        //         url: '/detail',
+        //         data: {sample_give: '데이터전송'},
+        //         success: function (response) {
+        //             alert(response['msg'])
+        //         }
+        //     });
+        // }
+        function loading_dishes(){
+            console.log(dish_title)
+        }
+        loading_dishes();
+    </script>
+</head>
+
+<body>
+
+<div class="header">
+    <div class="title">
+        <h1>Wise Recipe</h1>
+    </div>
+    <div style="height:10px;"></div>
+    <div class="user-nick">
+        <h3><span>{{user.nickname}}</span>님 반갑습니다!!</h3>
+    </div>
+<!-- <h5>{{user.nickname}}님 안녕하세요!😀😀</h5> -->
+</div>
+<nav class="tag">
+    <div class="group tag1">
+        <button onclick="keyword('소고기')" type="button" class="btn btn-success">소고기</button>
+        <button onclick="keyword('돼지고기')" type="button" class="btn btn-success">돼지고기</button>
+        <button onclick="keyword('닭고기')" type="button" class="btn btn-success">닭고기</button>
+        <button onclick="keyword('육류')" type="button" class="btn btn-success">육류</button>
+        <button onclick="keyword('채소류')" type="button" class="btn btn-success">채소류</button>
+        <button onclick="keyword('해물류')" type="button" class="btn btn-success">해물류</button>
+        <button onclick="keyword('달걀')" type="button" class="btn btn-success">달걀/유제품</button>
+        <button onclick="keyword('가공식품')" type="button" class="btn btn-success">가공식품류</button>
+    </div>
+    <div class="group tag">
+        <button onclick="keyword('쌀')" type="button" class="btn btn-success">쌀</button>
+        <button onclick="keyword('밀가루')" type="button" class="btn btn-success">밀가루</button>
+        <button onclick="keyword('건어물')" type="button" class="btn btn-success">건어물류</button>
+        <button onclick="keyword('버섯')" type="button" class="btn btn-success">버섯류</button>
+        <button onclick="keyword('과일')" type="button" class="btn btn-success">과일류</button>
+        <button onclick="keyword('콩')" type="button" class="btn btn-success">콩/견과류</button>
+        <button onclick="keyword('곡류')" type="button" class="btn btn-success">곡류</button>
+        <button onclick="keyword('기타')" type="button" class="btn btn-success">기타</button>
+    </div>
+</nav>
+
+</div>
+<div class="mycards">
+    <div class="row row-cols-1 row-cols-md-4 g-4" id="cards-box">
+        <div class="col">
+            <div class="card h-100">
+                <img src="https://movie-phinf.pstatic.net/20210728_221/1627440327667GyoYj_JPEG/movie_image.jpg"
+                     class="card-img-top">
+                <div class="card-body">
+                    <h5 class="card-title">{{dish_img}}</h5>
+                    <p class="card-text">여기에 영화에 대한 설명이 들어갑니다.</p>
+                    <p>⭐⭐⭐</p>
+                    <p class="mycomment">나의 한줄 평을 씁니다</p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>
