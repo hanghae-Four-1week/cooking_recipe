@@ -158,7 +158,12 @@ def update_like():
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
 
-
+@app.route('/recipes', methods=["GET"])
+def get_recipes():
+    # 맛집 목록을 반환하는 API
+    recipes_list = list(db.recipes.find({}, {'_id': False}))
+    # recipes_list 라는 키 값에 레시피 목록을 담아 클라이언트에게 반환합니다.
+    return jsonify({'result': 'success', 'recipes_list': recipes_list})
 
 
 
