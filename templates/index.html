@@ -103,7 +103,12 @@
             margin-right: 10px;
         }
 
-        .card
+        #recipe-box {
+            margin-top:30px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
 
 
     </style>
@@ -134,7 +139,7 @@
 
         function make_card(i, img, title) {
             let html_temp = `
-         <div class="card" id="card-${i}" style="width: 18rem;">
+         <div class="card" id="card-${i}" style="width: 18rem; padding:5px;">
         <img src="${img}" class="card-img-top" alt="...">
         <div class="card-body">
             <h5 class="card-title"></h5>
