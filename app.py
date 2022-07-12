@@ -15,9 +15,11 @@ app.config['UPLOAD_FOLDER'] = "./static/profile_pics"
 
 SECRET_KEY = 'SPARTA'
 
-client = MongoClient(
-    'mongodb+srv://test:sparta@cluster0.xaxuh.mongodb.net/?retryWrites=true&w=majority')
-db = client.dbsparta_plus_week4
+client = MongoClient('mongodb+srv://test:sparta@cluster0.xaxuh.mongodb.net/?retryWrites=true&w=majority')
+db = client.dbcooking_recipe
+
+
+
 
 
 @app.route('/')
@@ -27,24 +29,21 @@ def main_recipe():
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         userid = (payload["id"])
         user_info = db.users.find_one({"username": userid})
-
-        headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'}
-        data = requests.get(
-            'https://www.10000recipe.com/recipe/list.html', headers=headers)
-
-        # HTML을 BeautifulSoup이라는 라이브러리를 활용해 검색하기 용이한 상태로 만듦
-        soup = BeautifulSoup(data.text, 'html.parser')
-
-        # select를 이용해서, tr들을 불러오기
-        dishes = soup.select('#contents_area_full > ul > ul > li ')
-        print(dishes)
-
-        return render_template('index.html', user = user_info)
+        recipes_list = list(db.recipes.find({}, {'_id': False}))
+        return render_template('index.html', user = user_info, recipes_list = recipes_list)
     except jwt.ExpiredSignatureError:
         return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
     except jwt.exceptions.DecodeError:
         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
+
+@app.route('/recipes', methods=["GET"])
+def get_recipes():
+    # 맛집 목록을 반환하는 API
+    recipes_list = list(db.recipes.find({}, {'_id': False}))
+    print(recipes_list)
+    # recipes_list 라는 키 값에 레시피 목록을 담아 클라이언트에게 반환합니다.
+    return jsonify({'result': 'success', 'recipes_list': recipes_list})
+
 
 
 @app.route('/login')
@@ -115,62 +114,55 @@ def check_dup():
     return jsonify({'result': 'success', 'exists': exists})
 
 
-@app.route('/update_profile', methods=['POST'])
-def save_img():
-    token_receive = request.cookies.get('mytoken')
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        # 프로필 업데이트
-        return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("home"))
+# @app.route('/update_profile', methods=['POST'])
+# def save_img():
+#     token_receive = request.cookies.get('mytoken')
+#     try:
+#         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+#         # 프로필 업데이트
+#         return jsonify({"result": "success", 'msg': '프로필을 업데이트했습니다.'})
+#     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+#         return redirect(url_for("home"))
 
 
-@app.route('/posting', methods=['POST'])
-def posting():
-    token_receive = request.cookies.get('mytoken')
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        # 포스팅하기
-        return jsonify({"result": "success", 'msg': '포스팅 성공'})
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("home"))
+# @app.route('/posting', methods=['POST'])
+# def posting():
+#     token_receive = request.cookies.get('mytoken')
+#     try:
+#         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+#         # 포스팅하기
+#         return jsonify({"result": "success", 'msg': '포스팅 성공'})
+#     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+#         return redirect(url_for("home"))
 
 
-@app.route("/get_posts", methods=['GET'])
-def get_posts():
-    token_receive = request.cookies.get('mytoken')
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        # 포스팅 목록 받아오기
-        return jsonify({"result": "success", "msg": "포스팅을 가져왔습니다."})
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("home"))
+# @app.route("/get_posts", methods=['GET'])
+# def get_posts():
+#     token_receive = request.cookies.get('mytoken')
+#     try:
+#         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+#         # 포스팅 목록 받아오기
+#         return jsonify({"result": "success", "msg": "포스팅을 가져왔습니다."})
+#     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+#         return redirect(url_for("home"))
 
 
-@app.route('/update_like', methods=['POST'])
-def update_like():
-    token_receive = request.cookies.get('mytoken')
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        # 좋아요 수 변경
-        return jsonify({"result": "success", 'msg': 'updated'})
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("home"))
+# @app.route('/update_like', methods=['POST'])
+# def update_like():
+#     token_receive = request.cookies.get('mytoken')
+#     try:
+#         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+#         # 좋아요 수 변경
+#         return jsonify({"result": "success", 'msg': 'updated'})
+#     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+#         return redirect(url_for("home"))
 
-@app.route('/recipes', methods=["GET"])
-def get_recipes():
-    # 맛집 목록을 반환하는 API
-    recipes_list = list(db.recipes.find({}, {'_id': False}))
-    # recipes_list 라는 키 값에 레시피 목록을 담아 클라이언트에게 반환합니다.
-    return jsonify({'result': 'success', 'recipes_list': recipes_list})
 
 
 
 @app.route("/detail", methods=["POST"])
 def post_dishes():
     sample_receive = request.form['sample_give']
-    print(sample_receive)
     return jsonify({'msg': 'POST 연결 완료!'})
 
 

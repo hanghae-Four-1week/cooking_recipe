@@ -102,38 +102,12 @@
         .mybtns>button {
             margin-right: 10px;
         }
+
+        .card
+
+
     </style>
     <script>
-        // $(document).ready(function(){
-        //   listing();
-        // });
-        //
-        // function listing() {
-        //     $.ajax({
-        //         type: 'GET',
-        //         url: '/detail',
-        //         data: {},
-        //         success: function (response) {
-        //             alert(response['msg'])
-        //         }
-        //     })
-        // }
-        //
-        // function posting() {
-        //     $.ajax({
-        //         type: 'POST',
-        //         url: '/detail',
-        //         data: {sample_give: '데이터전송'},
-        //         success: function (response) {
-        //             alert(response['msg'])
-        //         }
-        //     });
-        // }
-        function loading_dishes() {
-            console.log(dish_title)
-        }
-        loading_dishes();
-
         $(document).ready(function () {
 
             get_recipes()
@@ -147,24 +121,28 @@
                 url: '/recipes',
                 data: {},
                 success: function (response) {
-                    let recipes = response["recipes_list"]
+                    let recipes = response['recipes_list']
+                    console.log(recipes)
                     for (let i = 0; i < recipes.length; i++) {
                         let recipe = recipes[i]
-                        console.log(recipe)
-                        make_card(i, recipe)
+                        // console.log(recipe)
+                        make_card(i, recipes[i].img, recipes[i].title)
                     }
                 }
             });
         }
 
-        function make_card(i, recipe) {
-            let html_temp = `<div class="card" id="card-${i}">
-            <div class="card-body">
-                <img src="${recipe.img}" alt="..." class="card-img"></img>
-                <h5 class="card-title"><a href="#" class="matjip-title">${recipe.title}</a></h5>
-            </div>
-         </div>`;
-            $('#recipe-box').append(html_temp);
+        function make_card(i, img, title) {
+            let html_temp = `
+         <div class="card" id="card-${i}" style="width: 18rem;">
+        <img src="${img}" class="card-img-top" alt="...">
+        <div class="card-body">
+            <h5 class="card-title"></h5>
+            <p class="card-text">${title}</p>
+            <a href="#" class="btn btn-primary">Go somewhere</a>
+        </div>
+        </div>`
+        $('#recipe-box').append(html_temp);
         }
     </script>
 </head>
@@ -204,7 +182,7 @@
         </div>
     </nav>
 
-    </div>
+
     <div class="recipe-list" id="recipe-box">
         <div class="card" id="card-0">
             <div class="card-body">
