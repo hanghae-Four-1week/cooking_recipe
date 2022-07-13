@@ -1,9 +1,4 @@
-# from selenium import webdriver
-# from selenium.webdriver.chrome.service import Service
-# from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
-# import time
-# from selenium.common.exceptions import NoSuchElementException
 from pymongo import MongoClient
 import requests
 
@@ -62,6 +57,7 @@ def insert_recipe(url):
     # html태그의 text를 음식 이름을 얻기 위해 select_one으로 뽑아준다.
     name = soup.select_one('#contents_area > div.view2_summary.st3 > h3').text
 
+
     # 마찬가지로 이미지 태그의 속성 src를 가져온다.
     img_url = soup.select_one('#main_thumbs')['src']
 
@@ -92,6 +88,8 @@ def insert_recipe(url):
 
     steps = get_steps()
 
+    # type 추출
+
     # doc이라는 객체에 키: 값을 명시하여 담음
     doc = {
         'type': '기타',
@@ -103,11 +101,10 @@ def insert_recipe(url):
     }
 
     # db에 doc를 넣는다.
-    db.recipes.insert_one(doc)
-    print('완료!', name)
+    # db.recipes.insert_one(doc)
+    # print('완료!', name)
 
 def insert_all():
-    # db.recipe.drop()
     # urls 변수에 get_urls 함수를 담아서 반복문을 돌려 모든 페이지에서 추출한 객체들을 뽑아 담는다.
     urls = get_urls()
     for url in urls:
