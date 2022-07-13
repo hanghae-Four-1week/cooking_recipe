@@ -43,20 +43,28 @@ def get_urls():
             url = base_url + a['href']
             # 만들어놨던 배열에 하나씩 넣는다.
             urls.append(url)
+
+
     return urls
 
 get_urls()
 
 def insert_recipe(url):
+
+
     headers = {'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36'}
     data = requests.get(url, headers=headers)
     soup = BeautifulSoup(data.text, 'html.parser')
+
+    # id 값을 가져온다
+    id = url[-7:]
 
     # html태그의 text를 음식 이름을 얻기 위해 select_one으로 뽑아준다.
     name = soup.select_one('#contents_area > div.view2_summary.st3 > h3').text
 
     # 마찬가지로 이미지 태그의 속성 src를 가져온다.
     img_url = soup.select_one('#main_thumbs')['src']
+
 
     # 재료 항목 추출
     def get_ingredients():
@@ -90,7 +98,8 @@ def insert_recipe(url):
         'title': name,
         'image': img_url,
         'ingredient': ingredients,
-        'step': steps
+        'step': steps,
+        'id': id
     }
 
     # db에 doc를 넣는다.
