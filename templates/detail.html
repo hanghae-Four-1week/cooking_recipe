@@ -1,24 +1,178 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-        <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-          crossorigin="anonymous">
 
-      <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-            crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-            crossorigin="anonymous"></script>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+
+  <title>슬기로운 레시피</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+        font-family: 'Gowun Dodum', sans-serif;
+    }
+
+    body {
+      margin: 0;
+    }
+
+    .hero-body {
+      background-color: #5a9f07;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+      border-bottom:2px solid #5a9f07;
+    }
+
+    .title {
+      font-weight: 800;
+      font-size: 5rem;
+      font-family: 'Gamja Flower', cursive;
+      font-family: 'Stylish', sans-serif;
+    }
+
+    .subtitle {
+      font-size: 2rem;
+    }
+
+    .is-sparta {
+      color: #ffffff !important;
+      font-weight: 600;
+    }
+
+    .nick-box {
+      text-align: right;
+    }
+
+    .nick-box h2 {
+      color: rgb(0, 0, 0);
+    }
+
+    .wrapper {
+      width: 100%;
+      margin-top:50px;
+
+      background-color: rgb(255, 255, 255);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .wrapper-top {
+      width:100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .card1 {
+      width: 25%;
+    }
+
+    .card-text-1 {
+      font-weight: 600;
+      text-align: center;
+    }
+    .card-body > ol> li {
+      margin-top: 20px;
+    }
+    footer {
+      text-align: center;
+    }
+
+  </style>
+  <script>
+
+  </script>
 </head>
+
 <body>
 
+
+
+  <div class="hero-body has-text-centered" style="padding-bottom:1rem;margin:auto;">
+    <h1 onclick="window.location.href='/'" class="title is-sparta" style="padding-top:10px; cursor:pointer;">Wise Recipe</h1>
+    <h3 onclick="window.location.href='/'" style="cursor:pointer;" class="subtitle is-sparta">슬기로운 레시피</h3>
+
+    <div class="nick-box">
+      <h2 style=" display:inline-block; padding:10px; opacity:0.8; color:white;">
+        <span style="font-weight:600; background-color:black; color:white">{{user.nickname}}님</span> 맛있게 드세요!
+      </h2>
+    </div>
+  </div>
+
+  <div class="wrapper">
+      <div class="wrapper-top">
+    <div class="card1 mb-3">
+      <img style="height:300px;" src="{{recipes_list[0].image}}" class="card-img-top" alt="...">
+      <div class="card-body">
+        <p class="card-text-1">{{recipes_list[0].title}}</p>
+      </div>
+    </div>
+
+    <div class="card border-success mb-3" style="max-width: 18rem; margin-left:50px;">
+
+      <div class="card-header" style="font-weight:600;">음식 재료</div>
+      <div class="card-body text-success">
+        <ul style="margin-right:20px; font-weight:600;">
+        {% for recipe in recipes_list[0].ingredient %}
+        <li> {{recipe}} </li>
+        {% endfor %}
+        </ul>
+      </div>
+    </div>
+      </div>
+    <div class="card border-info mb-3" style="width: 700px;">
+      <div class="card-header" style="font-weight:600;">조리 순서!</div>
+      <div class="card-body">
+
+        <ol style="font-weight:600;">
+        {% for recipe in recipes_list[0].step %}
+        <li> {{recipe}} </li>
+        {% endfor %}
+        </ol>
+      </div>
+    </div>
+    <hr>
+    <footer class="blog-footer">
+      <div class="form-floating">
+        맛있으면 리뷰달아주세요!
+        <div>
+          <textarea class="form-control" placeholder="리뷰남기기" id="floatingTextarea" style="width: 300px; margin-top:20px;"></textarea>
+        <label for="floatingTextarea"></label>
+        </div>
+
+      </div>
+
+      <button type="button" class="btn btn-outline-primary">리뷰달기</button>
+<!--      <div class="card">-->
+<!--        <div class="card-body">-->
+<!--          <blockquote class="blockquote mb-0">-->
+<!--            <p>A well-known quote, contained in a blockquote element.</p>-->
+<!--            <footer class="blockquote-footer">Someone famous in <cite title="Source Title">Source Title</cite></footer>-->
+<!--          </blockquote>-->
+<!--        </div>-->
+<!--      </div>-->
+
+    </footer>
+
+
+
+  </div>
+
+
+
+
 </body>
+
 </html>
