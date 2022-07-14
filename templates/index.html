@@ -63,12 +63,6 @@
             bottom: 10px;
         }
 
-        .logout {
-            position: absolute;
-            bottom: 10px;
-            padding: 10px;
-            right: 40px;
-        }
 
         .logout button {
             padding: 10px;
@@ -97,30 +91,21 @@
 
         .tag>div>button {
             margin: 10px;
+            height: 50px;
+            padding: 20px;
+            padding-bottom: 65px;
             /* opacity: 0.8; */
-            background-color: rgb(48, 114, 13);
+            background-color: rgb(58, 59, 57);
             border: none;
+            border-radius: 8px;
             font-weight: 600;
-            font-size:20px;
+            font-size:30px;
         }
 
-        .mycomment {
-            color: rgb(0, 0, 0);
-        }
-
-        .mycards {
-            margin: 20px auto 0px auto;
-            width: 95%;
-            max-width: 1200px;
-        }
 
 
         .mybtns>button {
             margin-right: 10px;
-        }
-
-        .card-box {
-            list-style: none;
         }
 
 
@@ -131,6 +116,26 @@
             flex-wrap: wrap;
             justify-content: center;
         }
+
+        a {
+          text-decoration: none;
+           font-family: 'Gowun Dodum', sans-serif;
+            color: #383636;
+        }
+        .card {
+            width: 400px;
+            margin: 20px;
+        }
+       .card-txt {
+        font-size: 24px;
+        }
+       .card-body {
+           margin: 30px;
+           width: 380px;
+       }
+       .card-img-top {
+           height: 400px;
+       }
     </style>
     <script>
         $(document).ready(function () {
@@ -140,39 +145,52 @@
 
 
         function get_recipes() {
-            $('#recipe-box').empty();
+            $('.recipe-box').empty();
             $.ajax({
                 type: "GET",
                 url: '/recipes',
                 data: {},
                 success: function (response) {
                     let recipes = response['recipes_list']
-                    //}
+                    for (let i = 1; i < recipes.length; i++) {
+                        let img = recipes[i]['image']
+                        let title = recipes[i]['title']
+                        let id = recipes[i]['id']
+                        let temp_html = `<li class="card"  id="card-id" style="cursor:pointer;">
+                                        <a href="/detail/${id}">
+                                                <img  class="card-img-top" src="${img}" alt="..." style="opacity:0.9;">
+                                           <div class="card-body">
+                                             <p class="card-txt" id="tile_name">${title}</p>
+                                            </div>
+                                        </a>
+                                    </li>`
+                        $('.recipe-box').append(temp_html)
+
+                    }
                 }
-            });
+            })
         }
 
 
-        function keyword(data) {
-            $('.recipe-box').empty();
-            $.ajax({
-                // type에서 recipe db가져오기
-                type: "GET",
-                url: "/main/type",
-                data: {"type": data},
-                success: function (response) {
-                    let keyword = JSON.parse(response['menu_card']) //dump()로 변환한 문자열을 JSON.parse로 가져오기
-                    console.log(response)
-                    for (let i = 0; i < keyword.length; i++) {
+
+       function menuSumi(data) {
+        $('.recipe-box').empty();
+        $.ajax({
+            type: "GET",
+            url: "/q",
+            data: {"q": data},
+            success: function (response) {
+                    let keyword = response['menus_list']
+                    for (let i = 1; i < keyword.length; i++) {
                         let img = keyword[i]['image']
                         let title = keyword[i]['title']
-                        let id = keyword[i]['_id']['$oid']
-                        let temp_html = `<li class="card-box">
-                                            <a href="/detail?id=${id}">
-                                                <div class="card-image">
-                                                    <img src="${img}" alt="...">
+                        let id = keyword[i]['id']
+                        let temp_html = `<li class="card"  id="card-id" style="cursor:pointer;">
+                                            <a href="/detail/${id}">
+                                                    <img  class="card-img-top" src="${img}" alt="..." style="opacity:0.9;">
+                                               <div class="card-body">
+                                                 <p class="card-txt" id="tile_name">${title}</p>
                                                 </div>
-                                                <p class="card-txt" id="tile_name">${title}</p>
                                             </a>
                                         </li>`
                         $('.recipe-box').append(temp_html)
@@ -181,7 +199,60 @@
             })
         }
 
-    </script>
+  function menuBaek(data) {
+    $('.recipe-box').empty();
+    $.ajax({
+        type: "GET",
+        url: "/b",
+        data: {"q": data},
+        success: function (response) {
+                let keyword =
+                    response['menus_list']
+
+                for (let i = 1; i < keyword.length; i++) {
+                    let img = keyword[i]['image']
+                    let title = keyword[i]['title']
+                    let id = keyword[i]['id']
+                    let temp_html = `<li class="card"  id="card-id" style="cursor:pointer;">
+                                        <a href="/detail/${id}">
+                                                <img  class="card-img-top" src="${img}" alt="..." style="opacity:0.9;">
+                                           <div class="card-body">
+                                             <p class="card-txt" id="tile_name">${title}</p>
+                                            </div>
+                                        </a>
+                                    </li>`
+                    $('.recipe-box').append(temp_html)
+                }
+            }
+        })
+    }
+      function menuPyeon(data) {
+    $('.recipe-box').empty();
+    $.ajax({
+        type: "GET",
+        url: "/p",
+        data: {"q": data},
+        success: function (response) {
+                let keyword = response['menus_list']
+                for (let i = 1; i < keyword.length; i++) {
+                    let img = keyword[i]['image']
+                    let title = keyword[i]['title']
+                    let id = keyword[i]['id']
+                    let temp_html = `<li class="card"  id="card-id" style=" cursor:pointer;">
+                                        <a href="/detail/${id}">
+                                                <img  class="card-img-top" src="${img}" alt="..." style="opacity:0.9;">
+                                           <div class="card-body">
+                                             <p class="card-txt" id="tile_name">${title}</p>
+                                            </div>
+                                        </a>
+                                    </li>`
+                    $('.recipe-box').append(temp_html)
+                }
+            }
+        })
+    }
+
+</script>
 </head>
 
 <body>
@@ -199,14 +270,11 @@
     </div>
     <nav class="tag">
         <div class="group tag1">
-            <button onclick="keyword('수미네')" type="button" class="btn btn-success">수미네</button>
-            <button onclick="keyword('돼지고기')" type="button" class="btn btn-success">돼지고기</button>
-            <button onclick="keyword('닭고기')" type="button" class="btn btn-success">닭고기</button>
-            <button onclick="keyword('육류')" type="button" class="btn btn-success">육류</button>
-            <button onclick="keyword('채소류')" type="button" class="btn btn-success">채소류</button>
-            <button onclick="keyword('해물류')" type="button" class="btn btn-success">해물류</button>
-            <button onclick="keyword('달걀')" type="button" class="btn btn-success">달걀/유제품</button>
-            <button onclick="keyword('가공식품')" type="button" class="btn btn-success">가공식품류</button>
+            <button onclick="get_recipes()" type="button" class="btn btn-success">전체보기</button>
+            <button onclick="menuSumi('수미네')" type="button" class="btn btn-success">수미네</button>
+            <button onclick="menuBaek('백종원')" type="button" class="btn btn-success">백종원</button>
+            <button onclick="menuPyeon('편스토랑')" type="button" class="btn btn-success">편스토랑</button>
+
         </div>
 
     </nav>
@@ -214,15 +282,14 @@
 
     <div class="wrap-box" style="width:100%; display: flex; justify-content: center;">
     <div class="recipe-box">
-    {% for recipe in recipes_list %}
-        <div  class="card" id="card-id"style="width: 18rem; margin:30px; cursor:pointer;">
-            <img src="{{ recipe.image }}" onclick="location.href='/detail/{{recipe.id}}'" class="card-img-top" style="opacity:0.9;padding: 1em; height:300px" alt="...">
-            <div class="card-body">
-                <h5 class="card-title"></h5>
-                <p class="card-text">{{ recipe.title }}</p>
-            </div>
-        </div>
-    {% endfor %}
+<!--    {% for recipe in recipes_list %}-->
+<!--        <div  class="card" id="card-id"style="cursor:pointer;">-->
+<!--            <img src="{{ recipe.image }}" onclick="location.href='/detail/{{recipe.id}}'" class="card-img-top" style="opacity:0.9;" alt="...">-->
+<!--            <div class="card-body">-->
+<!--                <p class="card-text">{{ recipe.title }}</p>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    {% endfor %}-->
     </div>
 </div>
 
