@@ -104,15 +104,6 @@
             font-size:20px;
         }
 
-        .mycomment {
-            color: rgb(0, 0, 0);
-        }
-
-        .mycards {
-            margin: 20px auto 0px auto;
-            width: 95%;
-            max-width: 1200px;
-        }
 
 
         .mybtns>button {
@@ -125,11 +116,25 @@
 
 
         .recipe-box {
-            width: 80%;
+            max-width: 1800px;
             margin-top: 30px;
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
+        }
+
+        .card {
+            width: 400px;
+            height: 520px;
+            margin: 20px;
+            text-align: center;
+            border-radius: 8px;
+            font-size: 25px;
+        }
+        .card > img {
+            width: 350px;
+            height: 360px;
+            margin: 10px auto;
         }
     </style>
     <script>
@@ -197,45 +202,26 @@
             <!-- <button onclick="sign_out()"></button> -->
         </div>
     </div>
-    <nav class="tag">
-        <div class="group tag1">
-            <button onclick="keyword('소고기')" type="button" class="btn btn-success">소고기</button>
-            <button onclick="keyword('돼지고기')" type="button" class="btn btn-success">돼지고기</button>
-            <button onclick="keyword('닭고기')" type="button" class="btn btn-success">닭고기</button>
-            <button onclick="keyword('육류')" type="button" class="btn btn-success">육류</button>
-            <button onclick="keyword('채소류')" type="button" class="btn btn-success">채소류</button>
-            <button onclick="keyword('해물류')" type="button" class="btn btn-success">해물류</button>
-            <button onclick="keyword('달걀')" type="button" class="btn btn-success">달걀/유제품</button>
-            <button onclick="keyword('가공식품')" type="button" class="btn btn-success">가공식품류</button>
-        </div>
-        <div class="group tag2">
-            <button onclick="keyword('쌀')" type="button" class="btn btn-success">쌀</button>
-            <button onclick="keyword('밀가루')" type="button" class="btn btn-success">밀가루</button>
-            <button onclick="keyword('건어물')" type="button" class="btn btn-success">건어물류</button>
-            <button onclick="keyword('버섯')" type="button" class="btn btn-success">버섯류</button>
-            <button onclick="keyword('과일')" type="button" class="btn btn-success">과일류</button>
-            <button onclick="keyword('콩')" type="button" class="btn btn-success">콩/견과류</button>
-            <button onclick="keyword('곡류')" type="button" class="btn btn-success">곡류</button>
-            <button onclick="keyword('기타')" type="button" class="btn btn-success">기타</button>
-        </div>
-    </nav>
 
 
     <div class="wrap-box" style="width:100%; display: flex; justify-content: center;">
     <div class="recipe-box">
     {% for recipe in recipes_list %}
-        <div  class="card" id="card-id"style="width: 18rem; margin:30px; cursor:pointer;">
-            <img src="{{ recipe.image }}" onclick="location.href='/detail/{{recipe.id}}'" class="card-img-top" style="opacity:0.9; height:70%" alt="...">
+        <div  class="card" id="card-id"style=" cursor:pointer;">
+            <img src="{{ recipe.image }}" onclick="location.href='/detail/{{recipe.id}}'" class="card-img-top" salt="...">
             <div class="card-body">
                 <h5 class="card-title"></h5>
-                <p class="card-text">{{ recipe.title }}</p>
+                <p class="card-text">
+                    {{ recipe.title }}
+                </p>
             </div>
         </div>
     {% endfor %}
     </div>
 </div>
 
-    
+
 </body>
 
 </html>
+

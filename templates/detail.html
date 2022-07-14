@@ -17,6 +17,34 @@
   <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../static/css/detail.css">
 
+  <style>
+
+  * {
+      font-family: 'Gowun Dodum', sans-serif;
+  }
+  .comment-box {
+    width: 700px;
+    margin-top: 20px;
+    margin-bottom: 150px;
+    border-radius: 10px;
+    height: 100%;
+
+  }
+  .delete-div {
+    margin-top: -22px;
+  }
+  .input-box {
+    width: 600px;
+  }
+  .hero-body {
+    padding-bottom:1rem;
+    margin:auto;
+    background: url('../static/detail.jpg') no-repeat right;
+    background-size: cover;
+    /*opacity: 0.*/
+  }
+  </style>
+
   <script>
 
 
@@ -69,13 +97,14 @@
               let comment = posts[i]['comment']
               let nickname = posts[i]['nickname']
               let username = posts[i]['user_name']
-              let html_temp = `      <div class="card border-success mb-3" style="max-width: 18rem;">
+              let html_temp = `      <div class="card border-success mb-3" style="margin:30px auto; max-width: 600px;">
                             <div class="card-header nick-header">${nickname}</div>
                             <div class="card-body text-success">
-                              <p class="card-text">${comment}</p>
-                            </div>
-                            <div class="delete-div" id="${i + 1}" >
-                            <button class="delete-btn"  onclick="delete_post(${i + 1})">❌</button>
+                              <div class="card-text">${comment}</div>
+
+                              <div class="delete-div" id="${i + 1}" >
+                              <button class="delete-btn"  onclick="delete_post(${i + 1})">❌</button>
+                              </div>
                             </div>
                           </div>`
               $(".comment-box").append(html_temp)
@@ -117,10 +146,10 @@
 
 
 
-  <div class="hero-body has-text-centered" style="padding-bottom:1rem;margin:auto;">
+  <div class="hero-body has-text-centered" style="" >
     <h1 onclick="window.location.href='/'" class="title is-sparta" style="padding-top:10px; cursor:pointer;">Wise Recipe
     </h1>
-    <h3 onclick="window.location.href='/'" style="cursor:pointer;" class="subtitle is-sparta">슬기로운 레시피</h3>
+    <h3 onclick="window.location.href='/'" style="cursor:pointer; color: white" class="subtitle is-sparta">슬기로운 레시피</h3>
 
     <div class="nick-box">
       <h2 style=" display:inline-block; padding:10px; opacity:0.8; color:white;">
@@ -132,17 +161,17 @@
   <div class="wrapper">
     <div class="wrapper-top">
       <div class="card1 mb-3">
-        <img style="height:300px;" src="{{recipes_list[0].image}}" class="card-img-top" alt="...">
-        <div class="card-body">
-          <p class="card-text-1 title_give">{{recipes_list[0].title}}</p>
+        <img style="width: 400px ;height:400px;" src="{{recipes_list[0].image}}" class="card-img-top" alt="...">
+        <div class="card-body" style="width: 400px">
+          <p class="card-text-1 title_give" style="font-size: 24px;">{{recipes_list[0].title}}</p>
         </div>
       </div>
 
-      <div class="card border-success mb-3" style="max-width: 18rem; height:30%; margin-left:50px; height:400px;">
+      <div class="card border-success mb-3" style="margin-left:120px; margin-top: -7px; height: 100%;">
 
-        <div class="card-header" style="font-weight:600;">음식 재료</div>
+        <div class="card-header" style="font-size: 24px;text-align: center;font-weight:600; ">음식 재료</div>
         <div class="card-body text-success">
-          <ul style="margin-right:20px; font-weight:600;">
+          <ul style="margin-right:20px; font-weight:600; line-height:25px; font-size: 22px; line-height: 35px">
             {% for recipe in recipes_list[0].ingredient %}
             <li> {{recipe}} </li>
             {% endfor %}
@@ -150,13 +179,13 @@
         </div>
       </div>
     </div>
-    <div class="card border-info mb-3" style="width: 80%; height:500px;">
-      <div class="card-header" style="font-weight:600;">조리 순서!</div>
+    <div class="card border-info mb-3" style="width: 700px;">
+      <div class="card-header" style="font-size: 24px; text-align: center; font-weight:600; line-height:25px; ">조리 순서!</div>
       <div class="card-body">
 
-        <ol style="font-weight:600;">
+        <ol style="font-weight:600; font-size: 22px">
           {% for recipe in recipes_list[0].step %}
-          <li style="margin-top:3px;"> {{recipe}} </li>
+            <li style="margin-top:3px;"> {{recipe}} </li>
           {% endfor %}
         </ol>
       </div>
