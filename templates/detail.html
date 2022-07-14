@@ -39,9 +39,13 @@
   .hero-body {
     padding-bottom:1rem;
     margin:auto;
-    background: url('../static/detail.jpg') no-repeat right;
+    background: url('../static/css/4.jpg') no-repeat right;
     background-size: cover;
-    /*opacity: 0.*/
+    opacity: 0.9;
+  }
+
+  .hero-body > h1{
+    color:black;
   }
   </style>
 
@@ -147,12 +151,11 @@
 
 
   <div class="hero-body has-text-centered" style="" >
-    <h1 onclick="window.location.href='/'" class="title is-sparta" style="padding-top:10px; cursor:pointer;">Wise Recipe
-    </h1>
-    <h3 onclick="window.location.href='/'" style="cursor:pointer; color: white" class="subtitle is-sparta">슬기로운 레시피</h3>
+    <h1 onclick="window.location.href='/'" class="title is-sparta" style="padding-top:10px; cursor:pointer;">Wise Recipe</h1>
+    <h3 onclick="window.location.href='/'" style="cursor:pointer;" class="subtitle is-sparta">슬기로운 레시피</h3>
 
     <div class="nick-box">
-      <h2 style=" display:inline-block; padding:10px; opacity:0.8; color:white;">
+      <h2 style=" display:inline-block; padding:10px; opacity:0.9; color:black;">
         <span style="font-weight:600; background-color:black; color:white">{{user.nickname}}님</span> 맛있게 드세요!
       </h2>
     </div>
