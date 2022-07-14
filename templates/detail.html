@@ -45,7 +45,21 @@
   }
 
   .hero-body > h1{
-    color:black;
+    text-align: left;
+    margin-left:100px;
+  }
+
+  .hero-body > h3 {
+    text-align: left;
+        margin-left:100px;
+  }
+
+
+
+  .nick-box {
+    diplay: flex;
+    justify-content: center;
+    text-align: center;
   }
   </style>
 
@@ -155,7 +169,7 @@
     <h3 onclick="window.location.href='/'" style="cursor:pointer;" class="subtitle is-sparta">슬기로운 레시피</h3>
 
     <div class="nick-box">
-      <h2 style=" display:inline-block; padding:10px; opacity:0.9; color:black;">
+      <h2 style=" display:inline-block; padding:10px; opacity:0.9; color:white;">
         <span style="font-weight:600; background-color:black; color:white">{{user.nickname}}님</span> 맛있게 드세요!
       </h2>
     </div>
