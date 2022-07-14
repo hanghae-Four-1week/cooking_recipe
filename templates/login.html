@@ -71,6 +71,12 @@
             color: rgb(0, 0, 0);
         }
 
+        .btn-success {
+            background-color:#358c10;
+            color:white;
+            font-weight:600;
+            margin-top:-40px;
+        }
 
 
 
@@ -176,7 +182,7 @@
                 $("#help-nick").text("닉네임을 입력해주세요.").removeClass("is-safe").addClass("is-danger")
                 $("#input-nick").focus()
                 return;
-            } else if (!is_nickname(nick_name)) {
+            } else if (!is_nickcheck(nick_name)) {
                 $("#help-nick").text("닉네임의 형식을 확인해주세요. 영문과 숫자 필수 포함, 2-10자").removeClass("is-safe").addClass("is-danger")
                 $("#input-nick").focus()
                 return;
@@ -215,23 +221,20 @@
             $('.btn-success').toggleClass("is-hidden")
         }
 
-        function is_nickname(asValue) {
-            var regExp = /^(?=.*[a-zA-Z])[-a-zA-Z0-9_.]{2,10}$/;
-            return regExp.test(asValue);
-        }
-
         function is_password(asValue) {
             var regExp = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z!@#$%^&*]{8,20}$/;
             return regExp.test(asValue);
         }
 
         function is_nickname(asValue) {
-            var regExp =  /[0-9]|[a-z]|[A-Z]|[가-힣]{2,10}$/; 
+            var regExp =  /^(?=.*[a-zA-Z])[-a-zA-Z0-9_.]{2,10}$/; 
             return regExp.test(asValue);
         }
 
-        function check_dup() {
 
+        function is_nickcheck(asValue) {
+            var regExp =  /[0-9]|[a-z]|[A-Z]|[가-힣]{2,10}$/; 
+            return regExp.test(asValue);
         }
 
 
@@ -243,8 +246,8 @@
                 $("#input-nick").focus()
                 return;
             }
-            if (!is_nickname(nickname)) {
-                $("#help-nick").text("닉네임의 형식을 확인해주세요. 영문과 숫자, 일부 특수문자(._-) 사용 가능. 2-10자 길이").removeClass("is-safe").addClass("is-danger")
+            if (!is_nickcheck(nickname)) {
+                $("#help-nick").text("닉네임의 형식을 확인해주세요. 영문과 숫자 및 한글 사용 가능. 2-10자 길이").removeClass("is-safe").addClass("is-danger")
                 $("#input-nick").focus()
                 return;
             }
@@ -279,7 +282,7 @@
                 return;
             }
             if (!is_nickname(username)) {
-                $("#help-id").text("닉네임의 형식을 확인해주세요. 영문과 숫자, 일부 특수문자(._-) 사용 가능. 2-10자 길이").removeClass("is-safe").addClass("is-danger")
+                $("#help-id").text("아이디의 형식을 확인해주세요. 영문과 숫자, 일부 특수문자(._-) 사용 가능. 2-10자 길이").removeClass("is-safe").addClass("is-danger")
                 $("#input-username").focus()
                 return;
             }
@@ -346,8 +349,8 @@
                                 <input id="input-nick" class="input" type="text" placeholder="닉네임">
                                 <span class="icon is-small is-left"><i class="fa fa-user"></i></span>
                             </div>
-                            <div id="btn-check-dup-nick nick-div is-hidden" class="control-nick">
-                                    <button class="btn btn-success is-hidden" onclick="check_dup_nick()" style="margin-left:370px; margin-top:-40px;">중복확인</button>
+                            <div id="btn-check-dup-nick nick-div" class="control-nick">
+                                    <button class="btn button btn-success is-hidden" onclick="check_dup_nick()" style="margin-left:350px;">중복확인</button>
                             </div>
                             <p id="help-nick" class="help is-hidden">닉네임은 2-10자의 한글과 영문과 숫자만 입력 가능합니다.</p>
 

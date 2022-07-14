@@ -104,6 +104,15 @@
             font-size:20px;
         }
 
+        .mycomment {
+            color: rgb(0, 0, 0);
+        }
+
+        .mycards {
+            margin: 20px auto 0px auto;
+            width: 95%;
+            max-width: 1200px;
+        }
 
 
         .mybtns>button {
@@ -116,26 +125,14 @@
 
 
         .recipe-box {
-            max-width: 1800px;
+            width: 80%;
             margin-top: 30px;
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
         }
 
-        .card {
-            width: 400px;
-            height: 520px;
-            margin: 20px;
-            text-align: center;
-            border-radius: 8px;
-            font-size: 25px;
-        }
-        .card > img {
-            width: 350px;
-            height: 360px;
-            margin: 10px auto;
-        }
+        
     </style>
     <script>
         $(document).ready(function () {
@@ -207,19 +204,16 @@
     <div class="wrap-box" style="width:100%; display: flex; justify-content: center;">
     <div class="recipe-box">
     {% for recipe in recipes_list %}
-        <div  class="card" id="card-id"style=" cursor:pointer;">
-            <img src="{{ recipe.image }}" onclick="location.href='/detail/{{recipe.id}}'" class="card-img-top" salt="...">
+        <div  class="card" id="card-id"style="width: 18rem; margin:30px; cursor:pointer;">
+            <img src="{{ recipe.image }}" onclick="location.href='/detail/{{recipe.id}}'" class="card-img-top" style="opacity:0.9; height:70%" alt="...">
             <div class="card-body">
                 <h5 class="card-title"></h5>
-                <p class="card-text">
-                    {{ recipe.title }}
-                </p>
+                <p class="card-text">{{ recipe.title }}</p>
             </div>
         </div>
     {% endfor %}
     </div>
 </div>
-
 
 </body>
 
