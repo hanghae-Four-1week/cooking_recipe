@@ -70,12 +70,24 @@
         .help {
             color: rgb(0, 0, 0);
         }
+
+
+
+
+
     </style>
     <script>
         // {% if msg %}
         //     alert("{{ msg }}")
         // {% endif %}
 
+        const nick_div = document.querySelector('#nick-div')
+        const nick_input =  document.querySelector('.nick-name')
+
+            
+
+            nick_div.style.display = 'display: none';
+        
 
 
         function sign_in() {
@@ -172,6 +184,8 @@
                 $("#help-password").text("사용할 수 있는 닉네임입니다.").removeClass("is-danger").addClass("is-success")
             }
 
+            
+
             $.ajax({
                 type: "POST",
                 url: "/sign_up/save",
@@ -197,7 +211,8 @@
             $("#help-password2").toggleClass("is-hidden")
             $('.nick-name').toggleClass("is-hidden")
             $('#help-nick').toggleClass("is-hidden")
-
+            $('#nick-div').toggleClass('is-hidden')
+            $('.btn-success').toggleClass("is-hidden")
         }
 
         function is_nickname(asValue) {
@@ -214,6 +229,46 @@
             var regExp =  /[0-9]|[a-z]|[A-Z]|[가-힣]{2,10}$/; 
             return regExp.test(asValue);
         }
+
+        function check_dup() {
+
+        }
+
+
+        function check_dup_nick() {
+            let nickname = $("#input-nick").val()
+            console.log(nickname)
+            if (nickname == "") {
+                $("#help-nick").text("닉네임을 입력해주세요.").removeClass("is-safe").addClass("is-danger")
+                $("#input-nick").focus()
+                return;
+            }
+            if (!is_nickname(nickname)) {
+                $("#help-nick").text("닉네임의 형식을 확인해주세요. 영문과 숫자, 일부 특수문자(._-) 사용 가능. 2-10자 길이").removeClass("is-safe").addClass("is-danger")
+                $("#input-nick").focus()
+                return;
+            }
+            $("#help-nick").addClass("is-loading")
+            $.ajax({
+                type: "POST",
+                url: "/sign_up/check_dup_nick",
+                data: {
+                    nickname_give: nickname
+                },
+                success: function (response) {
+
+                    if (response["exists"]) {
+                        $("#help-nick").text("이미 존재하는 닉네임입니다.").removeClass("is-safe").addClass("is-danger")
+                        $("#input-nickname").focus()
+                    } else {
+                        $("#help-nick").text("사용할 수 있는 닉네임입니다.").removeClass("is-danger").addClass("is-success")
+                    }
+                    $("#help-nick").removeClass("is-loading")
+
+                }
+            });
+        }
+
 
         function check_dup() {
             let username = $("#input-username").val()
@@ -248,7 +303,6 @@
                 }
             });
         }
-
         $(document).ready(function () {
             $('#input-username').val('');
             $('#input-password').val('');
@@ -291,6 +345,9 @@
                             <div class="control has-icons-left nick-name help is-hidden" style="width:100%;" >
                                 <input id="input-nick" class="input" type="text" placeholder="닉네임">
                                 <span class="icon is-small is-left"><i class="fa fa-user"></i></span>
+                            </div>
+                            <div id="btn-check-dup-nick nick-div is-hidden" class="control-nick">
+                                    <button class="btn btn-success is-hidden" onclick="check_dup_nick()" style="margin-left:370px; margin-top:-40px;">중복확인</button>
                             </div>
                             <p id="help-nick" class="help is-hidden">닉네임은 2-10자의 한글과 영문과 숫자만 입력 가능합니다.</p>
 

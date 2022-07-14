@@ -15,76 +15,101 @@
   <title>슬기로운 레시피</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../static/css/detail.css">
 
-  <style>
-    body {
-      margin: 0;
-    }
-
-    .hero-body {
-      background-color: #5a9f07;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      text-align: center;
-      border-bottom:2px solid #5a9f07;
-    }
-
-    .title {
-      font-weight: 800;
-      font-size: 5rem;
-      font-family: 'Gamja Flower', cursive;
-      font-family: 'Stylish', sans-serif;
-    }
-
-    .subtitle {
-      font-size: 2rem;
-    }
-
-    .is-sparta {
-      color: #ffffff !important;
-      font-weight: 600;
-    }
-
-    .nick-box {
-      text-align: right;
-    }
-
-    .nick-box h2 {
-      color: rgb(0, 0, 0);
-    }
-
-    .wrapper {
-      width: 100%;
-      margin-top:50px;
-
-      background-color: rgb(255, 255, 255);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .wrapper-top {
-      width:100%;
-      display: flex;
-      justify-content: center;
-    }
-
-    .card1 {
-      width: 25%;
-    }
-
-    .card-text-1 {
-      font-weight: 600;
-      text-align: center;
-    }
-
-
-
-  </style>
   <script>
 
+
+
+
+    function post() {
+      // id가 'title_give'인 tag에서 나온값을 title_give에 넣기
+      let comment = $(".input-tag").val()
+      //현재시각 today에 넣기
+      let today = new Date().toISOString()
+      let title_give = $('.title_give').text()
+      $.ajax({
+        type: "POST",
+        url: '/posting',
+        data: {
+          // comment, today, title_give 보내기
+          comment_give: comment,
+          date_give: today,
+          title_give: title_give
+        },
+        success: function (response) {
+          alert(response["msg"]);
+          window.location.reload()
+          console.log(response['num'])
+        }
+      })
+    }
+
+
+    
+
+    function get_posts() {
+      $(".comment-box").empty()
+      // id가 'title_give'인 tag에서 나온값을 title_give에 넣기
+      let title_give = $('.title_give').text()
+      $.ajax({
+        type: "POST",
+        url: "/get_posts",
+        data: {
+          //title_give 보내주기
+          title_give: title_give
+        },
+        success: function (response) {
+          // response 확인하기
+          if (response["result"] == "success") {
+            let posts = response["posts"]
+            let num = response["num"]
+            //posts의 list안에있는 'comment', 'user_name'을 id가 'post-box'인 tag에 tag들을 append하기
+            for (let i = 0; i < posts.length; i++) {
+              let comment = posts[i]['comment']
+              let nickname = posts[i]['nickname']
+              let username = posts[i]['user_name']
+              let html_temp = `      <div class="card border-success mb-3" style="max-width: 18rem;">
+                            <div class="card-header nick-header">${nickname}</div>
+                            <div class="card-body text-success">
+                              <p class="card-text">${comment}</p>
+                            </div>
+                            <div class="delete-div" id="${i + 1}" >
+                            <button class="delete-btn"  onclick="delete_post(${i + 1})">❌</button>
+                            </div>
+                          </div>`
+              $(".comment-box").append(html_temp)
+            }
+          }
+        }
+      })
+    }
+
+
+    function delete_post(num) {
+      let title_give = $('.title_give').text()
+      let check_nick = document.querySelector('.nick-header').innerHTML;
+      console.log(check_nick, title_give);
+      $.ajax({
+        type: "POST",
+        url: "/delete_post",
+        data: {
+          nick_give: check_nick,
+          title_give: title_give,
+          num_give: num
+        },
+        success: function (response) {
+          alert(response['msg'])
+          window.location.reload()
+          }
+        })
+      }
+        
+
+    // page열면 바로 get_posts() 실행
+    $(document).ready(function () {
+      get_posts()
+    })
   </script>
 </head>
 
@@ -93,7 +118,8 @@
 
 
   <div class="hero-body has-text-centered" style="padding-bottom:1rem;margin:auto;">
-    <h1 onclick="window.location.href='/'" class="title is-sparta" style="padding-top:10px; cursor:pointer;">Wise Recipe</h1>
+    <h1 onclick="window.location.href='/'" class="title is-sparta" style="padding-top:10px; cursor:pointer;">Wise Recipe
+    </h1>
     <h3 onclick="window.location.href='/'" style="cursor:pointer;" class="subtitle is-sparta">슬기로운 레시피</h3>
 
     <div class="nick-box">
@@ -104,60 +130,51 @@
   </div>
 
   <div class="wrapper">
-      <div class="wrapper-top">
-    <div class="card1 mb-3">
-      <img style="height:300px;" src="{{recipes_list[0].image}}" class="card-img-top" alt="...">
-      <div class="card-body">
-        <p class="card-text-1">{{recipes_list[0].title}}</p>
+    <div class="wrapper-top">
+      <div class="card1 mb-3">
+        <img style="height:300px;" src="{{recipes_list[0].image}}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <p class="card-text-1 title_give">{{recipes_list[0].title}}</p>
+        </div>
+      </div>
+
+      <div class="card border-success mb-3" style="max-width: 18rem; height:30%; margin-left:50px; height:400px;">
+
+        <div class="card-header" style="font-weight:600;">음식 재료</div>
+        <div class="card-body text-success">
+          <ul style="margin-right:20px; font-weight:600;">
+            {% for recipe in recipes_list[0].ingredient %}
+            <li> {{recipe}} </li>
+            {% endfor %}
+          </ul>
+        </div>
       </div>
     </div>
-
-    <div class="card border-success mb-3" style="max-width: 18rem; height:30%; margin-left:50px; height:400px;">
-
-      <div class="card-header" style="font-weight:600;">음식 재료</div>
-      <div class="card-body text-success">
-        <ul style="margin-right:20px; font-weight:600;">
-        {% for recipe in recipes_list[0].ingredient %}
-        <li> {{recipe}} </li>
-        {% endfor %}
-        </ul>
-      </div>
-    </div>
-      </div>
     <div class="card border-info mb-3" style="width: 80%; height:500px;">
       <div class="card-header" style="font-weight:600;">조리 순서!</div>
       <div class="card-body">
 
         <ol style="font-weight:600;">
-        {% for recipe in recipes_list[0].step %}
-        <li> {{recipe}} </li>
-        {% endfor %}
+          {% for recipe in recipes_list[0].step %}
+          <li style="margin-top:3px;"> {{recipe}} </li>
+          {% endfor %}
         </ol>
       </div>
     </div>
 
-    <footer class="blog-footer">
-      <div class="form-floating">
-        맛있으면 리뷰달아주세요!
-        <div>
-          <textarea class="form-control" placeholder="리뷰남기기" id="floatingTextarea"></textarea>
-        <label for="floatingTextarea"></label>
-        </div>
-
+    <div class="input-box">
+      <div class="input-group mb-3">
+        <input type="textarea" class="form-control input-tag" placeholder="댓글을 입력하세요" aria-label="Recipient's username"
+          aria-describedby="button-addon2">
+        <button type="button" class="btn btn-primary" onclick="post()">댓글등록!</button>
       </div>
+    </div>
 
-      <button type="button" class="btn btn-outline-primary">리뷰달기</button>
-      <div class="card">
-        <div class="card-body">
-          <blockquote class="blockquote mb-0">
-            <p>A well-known quote, contained in a blockquote element.</p>
-            <footer class="blockquote-footer">Someone famous in <cite title="Source Title">Source Title</cite></footer>
-          </blockquote>
-        </div>
-      </div>
+    <div class="comment-box">
 
-    </footer>
 
+
+    </div>
 
 
   </div>

@@ -42,7 +42,6 @@ def main_recipe():
 def get_recipes():
     # 맛집 목록을 반환하는 API
     recipes_list = list(db.recipes.find({}, {'_id': False}))
-    # print(recipes_list)
     # recipes_list 라는 키 값에 레시피 목록을 담아 클라이언트에게 반환합니다.
     return jsonify({'result': 'success', 'recipes_list': recipes_list})
 
@@ -112,52 +111,103 @@ def sign_up():
 def check_dup():
     username_receive = request.form['username_give']
     exists = bool(db.users.find_one({"username": username_receive}))
+    return jsonify({'result': 'success', 'exists': exists})
 
+@app.route('/sign_up/check_dup_nick', methods=['POST'])
+def check_dup_nick():
+    nickname_receive = request.form['nickname_give']
+    exists = bool(db.users.find_one({"nickname": nickname_receive}))
     return jsonify({'result': 'success', 'exists': exists})
 
 
-@app.route('/main/type', methods=['GET'])
-# db에서 키워드로 db리스트 가져오기
-def show_card():
-    keyword = request.args.get('type')
-    menu_card = list(db.recipes.find({'type': {'$regex': keyword}})) # $regex -> 포함된 문자열을 리스트 가져오기
-    return jsonify({'menu_card': dumps(menu_card)}) #dump() -> JSON문자열로 변환, id값이 $oid안에 있어서?
+
+
+
 
 @app.route('/posting', methods=['POST'])
 def posting():
     # 클라이언트로부터 'comment_give'받아서 'comment_receive'에 넣어주기
     comment_receive = request.form["comment_give"]
-    print(comment_receive, "댓글")
-    # 클라이언트로부터 'date_give'받아서 'date_receive'에 넣어주기
     date_receive = request.form["date_give"]
-    # 'date_receive'를 문자열로 변환하기
     date_receive = repr(date_receive)
-    print(date_receive, "날짜")
-    # 클라이언트로부터 'title_give' 받아서 'title_give'에 넣기
     title_give = request.form['title_give']
-    print(title_give, "타이틀")
-    # 쿠키에서 토큰받기
     token_receive = request.cookies.get('mytoken')
+    posts = list(db.posts.find({'title':title_give}, {'_id': False}))
+    count = len(posts) + 1
     try:
-        # 받은 'token'에서 'id,exp'이 있는 payload 받아오기
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        # payload['id']에서 userid 받아오기
         userid = (payload["id"])
-        # db의 user에서 userid 받아와서 user_info에 넣기
-        user_info = db.users.find_one({"userid": userid})
-        print(user_info,"유저인포")
-        # user_name, comment, date, title 들을 posts라는 db에 저장
+        user_info = db.users.find_one({"username": userid})
         doc = {
             'user_name':user_info['username'],
             "comment": comment_receive,
             "date": date_receive,
-            'title': title_give
+            'title': title_give,
+            'nickname':user_info['nickname'],
+            'num': count
         }
         db.posts.insert_one(doc)
-        return jsonify({"result": "success", 'msg': '포스팅 성공'})
+        return jsonify({"result": "success", 'msg': '포스팅 성공', 'num': count})
     # jwt에서 exp가 만료되었을 때, "show_menu"로 보내기
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("show_menu"))
+
+
+
+
+
+
+# 댓글 클라이언트로 보내주기 / //////////////////////
+@app.route("/get_posts", methods=['POST'])
+def get_posts():
+    # 클라이언트에서 'title_give'받기
+    title_give = request.form['title_give']
+    # posts에 저장된 'user_name, comment, date, title' 중에서 'title'이 받은 'title_give'와 일치하는 db들을 list로 posts에 넣기
+    posts = list(db.posts.find({'title':title_give}, {'_id': False}))
+    # posts를 클라이언트에 주기
+    return jsonify({"result": "success", "msg": "포스팅을 가져왔습니다.", "posts": posts})
+
+
+
+
+
+# delete---------------------------------------------
+@app.route("/delete_post", methods=['POST'])
+def delete_posts():
+    token_receive = request.cookies.get('mytoken')
+    nick_receive = request.form['nick_give']
+    title_receive = request.form['title_give']
+    num_receive = int(request.form['num_give']) - 1
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        userid = (payload["id"])
+        user_info = db.users.find_one({"username": userid}, {'_id': False})
+        title_info = list(db.posts.find({"title": title_receive}, {'_id': False}))
+        print(num_receive);
+        print(user_info['nickname'])
+        
+        if user_info['nickname'] == title_info[num_receive]['nickname']:
+            msg = "삭제완료!"
+            db.posts.delete_one(title_info[num_receive])
+        else:
+            msg = '권한이 없습니다.'
+        return jsonify(user = user_info, msg = msg)
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -171,22 +221,11 @@ def post_dishes(i):
         userid = (payload["id"])
         user_info = db.users.find_one({"username": userid})
         recipes_list = list(db.recipes.find({'id': i}))
-        print(recipes_list)
         return render_template('detail.html', user = user_info, recipes_list = recipes_list)
     except jwt.ExpiredSignatureError:
         return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
     except jwt.exceptions.DecodeError:
         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
-# @app.route("/theme/<theme_name>", methods=["POST"])
-# def travel_read(theme_name):
-#     travel_list = list(db.travels.find({'theme': theme_name}, {'_id': False}))
-#     return jsonify({'travels': travel_list})
-
-# @app.route('/detail', methods=["GET"])
-# def get_dishes():
-#     # 요리 목록을 반환하는 API
-#     # return jsonify({'result': 'success', 'recipe_list': []})
-#     return jsonify({'msg': 'GET 연결 완료!'})
 
 
 if __name__ == '__main__':

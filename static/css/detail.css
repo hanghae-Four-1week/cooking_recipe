@@ -1,0 +1,94 @@
+body {
+  margin: 0;
+}
+
+.hero-body {
+  background-color: #5a9f07;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  border-bottom:2px solid #5a9f07;
+}
+
+.title {
+  font-weight: 800;
+  font-size: 5rem;
+  font-family: 'Gamja Flower', cursive;
+  font-family: 'Stylish', sans-serif;
+}
+
+.subtitle {
+  font-size: 2rem;
+}
+
+.is-sparta {
+  color: #ffffff !important;
+  font-weight: 600;
+}
+
+.nick-box {
+  text-align: right;
+}
+
+.nick-box h2 {
+  color: rgb(0, 0, 0);
+}
+
+.wrapper {
+  width: 100%;
+  margin-top:50px;
+
+  background-color: rgb(255, 255, 255);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.wrapper-top {
+  width:100%;
+  display: flex;
+  justify-content: center;
+}
+
+.card1 {
+  width: 25%;
+}
+
+.card-text-1 {
+  font-weight: 600;
+  text-align: center;
+}
+
+
+.input-box {
+  width:60%;
+  margin-top:100px;
+}
+
+.form-control{
+  border:2px solid black;
+}
+
+
+.comment-box {
+  width:90%;
+  height:90vh;
+  border:1px solid black;
+}
+
+.border-success {
+  margin: 20px;
+}
+
+.delete-btn {
+  width:15%;
+  border:none;
+  background-color:white;
+}
+
+.delete-div {
+  display: flex;
+  justify-content: right;
+}
