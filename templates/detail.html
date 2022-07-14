@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+
+  <title>슬기로운 레시피</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../static/css/detail.css">
+
+  <script>
+
+
+
+
+    function post() {
+      // id가 'title_give'인 tag에서 나온값을 title_give에 넣기
+      let comment = $(".input-tag").val()
+      //현재시각 today에 넣기
+      let today = new Date().toISOString()
+      let title_give = $('.title_give').text()
+      $.ajax({
+        type: "POST",
+        url: '/posting',
+        data: {
+          // comment, today, title_give 보내기
+          comment_give: comment,
+          date_give: today,
+          title_give: title_give
+        },
+        success: function (response) {
+          alert(response["msg"]);
+          window.location.reload()
+          console.log(response['num'])
+        }
+      })
+    }
+
+
+    
+
+    function get_posts() {
+      $(".comment-box").empty()
+      // id가 'title_give'인 tag에서 나온값을 title_give에 넣기
+      let title_give = $('.title_give').text()
+      $.ajax({
+        type: "POST",
+        url: "/get_posts",
+        data: {
+          //title_give 보내주기
+          title_give: title_give
+        },
+        success: function (response) {
+          // response 확인하기
+          if (response["result"] == "success") {
+            let posts = response["posts"]
+            let num = response["num"]
+            //posts의 list안에있는 'comment', 'user_name'을 id가 'post-box'인 tag에 tag들을 append하기
+            for (let i = 0; i < posts.length; i++) {
+              let comment = posts[i]['comment']
+              let nickname = posts[i]['nickname']
+              let username = posts[i]['user_name']
+              let html_temp = `      <div class="card border-success mb-3" style="max-width: 18rem;">
+                            <div class="card-header nick-header">${nickname}</div>
+                            <div class="card-body text-success">
+                              <p class="card-text">${comment}</p>
+                            </div>
+                            <div class="delete-div" id="${i + 1}" >
+                            <button class="delete-btn"  onclick="delete_post(${i + 1})">❌</button>
+                            </div>
+                          </div>`
+              $(".comment-box").append(html_temp)
+            }
+          }
+        }
+      })
+    }
+
+
+    function delete_post(num) {
+      let title_give = $('.title_give').text()
+      let check_nick = document.querySelector('.nick-header').innerHTML;
+      console.log(check_nick, title_give);
+      $.ajax({
+        type: "POST",
+        url: "/delete_post",
+        data: {
+          nick_give: check_nick,
+          title_give: title_give,
+          num_give: num
+        },
+        success: function (response) {
+          alert(response['msg'])
+          window.location.reload()
+          }
+        })
+      }
+        
+
+    // page열면 바로 get_posts() 실행
+    $(document).ready(function () {
+      get_posts()
+    })
+  </script>
+</head>
+
+<body>
+
+
+
+  <div class="hero-body has-text-centered" style="padding-bottom:1rem;margin:auto;">
+    <h1 onclick="window.location.href='/'" class="title is-sparta" style="padding-top:10px; cursor:pointer;">Wise Recipe
+    </h1>
+    <h3 onclick="window.location.href='/'" style="cursor:pointer;" class="subtitle is-sparta">슬기로운 레시피</h3>
+
+    <div class="nick-box">
+      <h2 style=" display:inline-block; padding:10px; opacity:0.8; color:white;">
+        <span style="font-weight:600; background-color:black; color:white">{{user.nickname}}님</span> 맛있게 드세요!
+      </h2>
+    </div>
+  </div>
+
+  <div class="wrapper">
+    <div class="wrapper-top">
+      <div class="card1 mb-3">
+        <img style="height:300px;" src="{{recipes_list[0].image}}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <p class="card-text-1 title_give">{{recipes_list[0].title}}</p>
+        </div>
+      </div>
+
+      <div class="card border-success mb-3" style="max-width: 18rem; height:30%; margin-left:50px; height:400px;">
+
+        <div class="card-header" style="font-weight:600;">음식 재료</div>
+        <div class="card-body text-success">
+          <ul style="margin-right:20px; font-weight:600;">
+            {% for recipe in recipes_list[0].ingredient %}
+            <li> {{recipe}} </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="card border-info mb-3" style="width: 80%; height:500px;">
+      <div class="card-header" style="font-weight:600;">조리 순서!</div>
+      <div class="card-body">
+
+        <ol style="font-weight:600;">
+          {% for recipe in recipes_list[0].step %}
+          <li style="margin-top:3px;"> {{recipe}} </li>
+          {% endfor %}
+        </ol>
+      </div>
+    </div>
+
+    <div class="input-box">
+      <div class="input-group mb-3">
+        <input type="textarea" class="form-control input-tag" placeholder="댓글을 입력하세요" aria-label="Recipient's username"
+          aria-describedby="button-addon2">
+        <button type="button" class="btn btn-primary" onclick="post()">댓글등록!</button>
+      </div>
+    </div>
+
+    <div class="comment-box">
+
+
+
+    </div>
+
+
+  </div>
+
+
+
+
+</body>
+
+</html>

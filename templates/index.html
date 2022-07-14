@@ -1,10 +1,241 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+    <title>슬기로운 레시피</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            font-family: 'Gowun Dodum', sans-serif;
+        }
+
+        .header {
+            width: 100%;
+            height: 150px;
+            background-color: rgb(255, 255, 255);
+
+            background-image: linear-gradient(0deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0)), url('../static/back_2.png');
+            background-position: center;
+            background-size: cover;
+            opacity: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .title {
+            color: white;
+            margin: 0 auto;
+            width: 30%;
+            background-color: black;
+            opacity: 0.8;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+        }
+
+        .title h1 {
+            font-weight: 600;
+            z-index: 5;
+        }
+
+        .user-nick {
+            width: 100%;
+            text-align: center;
+            position: absolute;
+            bottom: 10px;
+        }
+
+        .logout {
+            position: absolute;
+            bottom: 10px;
+            padding: 10px;
+            right: 40px;
+        }
+
+        .logout button {
+            padding: 10px;
+            font-weight: 600;
+            border: none;
+        }
+
+        .user-nick h3 span {
+            color: white;
+            font-weight: 600;
+        }
+
+        .user-nick h3 {
+            color: white;
+            font-size: 35px;
+        }
+
+        .tag {
+            margin-top: 50px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .tag>div>button {
+            margin: 10px;
+            /* opacity: 0.8; */
+            background-color: rgb(48, 114, 13);
+            border: none;
+            font-weight: 600;
+            font-size:20px;
+        }
+
+        .mycomment {
+            color: rgb(0, 0, 0);
+        }
+
+        .mycards {
+            margin: 20px auto 0px auto;
+            width: 95%;
+            max-width: 1200px;
+        }
+
+
+        .mybtns>button {
+            margin-right: 10px;
+        }
+
+        .card-box {
+            list-style: none;
+        }
+
+
+        .recipe-box {
+            width: 80%;
+            margin-top: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+
+            get_recipes()
+        })
+
+
+        function get_recipes() {
+            $('#recipe-box').empty();
+            $.ajax({
+                type: "GET",
+                url: '/recipes',
+                data: {},
+                success: function (response) {
+                    let recipes = response['recipes_list']
+                    //}
+                }
+            });
+        }
+
+
+        function keyword(data) {
+            $('.recipe-box').empty();
+            $.ajax({
+                // main/type에서 recipe db가져오기
+                type: "GET",
+                url: "/main/type",
+                data: {"type": data},
+                success: function (response) {
+                    let keyword = JSON.parse(response['menu_card']) //dump()로 변환한 문자열을 JSON.parse로 가져오기
+                    console.log(response)
+                    for (let i = 0; i < keyword.length; i++) {
+                        let img = keyword[i]['image']
+                        let title = keyword[i]['title']
+                        let id = keyword[i]['_id']['$oid']
+                        let temp_html = `<li class="card-box">
+                                            <a href="/detail?id=${id}">
+                                                <div class="card-image">
+                                                    <img src="${img}" alt="...">
+                                                </div>
+                                                <p class="card-txt" id="tile_name">${title}</p>
+                                            </a>
+                                        </li>`
+                        $('.recipe-box').append(temp_html)
+                    }
+                }
+            })
+        }
+
+    </script>
 </head>
+
 <body>
 
+    <div class="header">
+        <div class="title">
+            <h1>Wise Recipe</h1>
+        </div>
+        <div style="height:10px;"></div>
+        <div class="user-nick">
+            <h3><span>{{user.nickname}}</span>님 반갑습니다!!</h3>
+
+            <!-- <button onclick="sign_out()"></button> -->
+        </div>
+    </div>
+    <nav class="tag">
+        <div class="group tag1">
+            <button onclick="keyword('소고기')" type="button" class="btn btn-success">소고기</button>
+            <button onclick="keyword('돼지고기')" type="button" class="btn btn-success">돼지고기</button>
+            <button onclick="keyword('닭고기')" type="button" class="btn btn-success">닭고기</button>
+            <button onclick="keyword('육류')" type="button" class="btn btn-success">육류</button>
+            <button onclick="keyword('채소류')" type="button" class="btn btn-success">채소류</button>
+            <button onclick="keyword('해물류')" type="button" class="btn btn-success">해물류</button>
+            <button onclick="keyword('달걀')" type="button" class="btn btn-success">달걀/유제품</button>
+            <button onclick="keyword('가공식품')" type="button" class="btn btn-success">가공식품류</button>
+        </div>
+        <div class="group tag2">
+            <button onclick="keyword('쌀')" type="button" class="btn btn-success">쌀</button>
+            <button onclick="keyword('밀가루')" type="button" class="btn btn-success">밀가루</button>
+            <button onclick="keyword('건어물')" type="button" class="btn btn-success">건어물류</button>
+            <button onclick="keyword('버섯')" type="button" class="btn btn-success">버섯류</button>
+            <button onclick="keyword('과일')" type="button" class="btn btn-success">과일류</button>
+            <button onclick="keyword('콩')" type="button" class="btn btn-success">콩/견과류</button>
+            <button onclick="keyword('곡류')" type="button" class="btn btn-success">곡류</button>
+            <button onclick="keyword('기타')" type="button" class="btn btn-success">기타</button>
+        </div>
+    </nav>
+
+
+    <div class="wrap-box" style="width:100%; display: flex; justify-content: center;">
+    <div class="recipe-box">
+    {% for recipe in recipes_list %}
+        <div  class="card" id="card-id"style="width: 18rem; margin:30px; cursor:pointer;">
+            <img src="{{ recipe.image }}" onclick="location.href='/detail/{{recipe.id}}'" class="card-img-top" style="opacity:0.9; height:70%" alt="...">
+            <div class="card-body">
+                <h5 class="card-title"></h5>
+                <p class="card-text">{{ recipe.title }}</p>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+</div>
+
+    
 </body>
+
 </html>
